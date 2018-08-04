@@ -5,6 +5,7 @@ using BattleTech;
 using BattleTech.UI;
 using UnityEngine;
 using System.Linq;
+using CustomComponents;
 
 namespace ArmorRepair
 {
@@ -505,18 +506,30 @@ namespace ArmorRepair
                 int techCost = 0;
                 int cbillCost = 0;
 
+
                 foreach (MechDef mechDef in __instance.ActiveMechs.Values)
                 {
                     if (mechDef.GUID == mechSimGameUID)
                     {
-                        
+                        ArmorRepairFactor armor = null;
+                        foreach (var item in mechDef.Inventory)
+                        {
+                            armor = item.GetComponent<ArmorRepairFactor>();
+                            if(armor != null)
+                                break;
+                        }
+
+                        float atpcost = armor?.ArmorTPCost ?? 1;
+                        float acbcost = armor?.ArmorCBCost ?? 1;
+
                         // If ScaleArmorCostByTonnage is enabled, make the mech tonnage work as a percentage tech cost reduction (95 tons = 0.95 or "95%" of the cost, 50 tons = 0.05 or "50%" of the cost etc)
                         if (ArmorRepair.ModSettings.ScaleArmorCostByTonnage)
                         {
                             mechTonnageModifier = mechDef.Chassis.Tonnage * 0.01f;
                         }
-                        float locationTechCost = ((armorDiff * mechTonnageModifier) * __instance.Constants.MechLab.ArmorInstallTechPoints);
-                        float locationCbillCost = ((armorDiff * mechTonnageModifier) * __instance.Constants.MechLab.ArmorInstallCost);
+
+                        float locationTechCost = ((armorDiff * mechTonnageModifier) * __instance.Constants.MechLab.ArmorInstallTechPoints) * atpcost;
+                        float locationCbillCost = ((armorDiff * mechTonnageModifier) * __instance.Constants.MechLab.ArmorInstallCost) * acbcost;
                         techCost = Mathf.CeilToInt(locationTechCost);
                         cbillCost = Mathf.CeilToInt(locationCbillCost);
 
@@ -637,6 +650,7 @@ namespace ArmorRepair
             typeof(int),
             typeof(string)
         })]
+
     public static class WorkOrderEntry_ModifyMechArmor_Patch
     {
         private static void Prefix(ref int cbillCost, ref int techCost, int desiredFrontArmor, int desiredRearArmor)

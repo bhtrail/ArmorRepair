@@ -21,6 +21,7 @@ namespace ArmorRepair
 
             var harmony = HarmonyInstance.Create("io.github.citizenSnippy.ArmorRepair");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+            CustomComponents.Registry.RegisterSimpleCustomComponents(Assembly.GetExecutingAssembly());
             
             // Serialise settings from mod.json
             ModDirectory = modDirectory;
