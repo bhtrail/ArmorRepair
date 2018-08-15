@@ -7,7 +7,7 @@ using CustomComponents;
 namespace ArmorRepair
 {
     [CustomComponent("ArmorRepair")]
-    public class ArmorRepairFactor : IAfterLoad
+    public class ArmorRepairFactor : SimpleCustomComponent, IAfterLoad
     {
         public float ArmorTPCost { get; set; }
         public float ArmorCBCost { get; set; }
