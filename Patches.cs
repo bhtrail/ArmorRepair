@@ -638,19 +638,20 @@ namespace ArmorRepair
      *      The player can then modify the ultimate tech cost for armor by setting the SimGameConstants.ArmorInstallTechCost integer as normal. 
      *      An ArmorInstallTechCost setting of 10 in SimGameConstants will now be equivalent to a StructureRepairTechCost of 0.1 (vanilla default for structure units is 0.3 for balancing illustration)
     */
-    [HarmonyPatch(typeof(WorkOrderEntry_ModifyMechArmor), new Type[]
-        {
-            typeof(string),
-            typeof(string),
-            typeof(string),
-            typeof(int),
-            typeof(ChassisLocations),
-            typeof(int),
-            typeof(int),
-            typeof(int),
-            typeof(string)
-        })]
-
+    [HarmonyPatch(typeof(WorkOrderEntry_ModifyMechArmor))]
+    [HarmonyPatch(new Type[]
+    {
+        typeof(string),
+        typeof(string),
+        typeof(string),
+        typeof(int),
+        typeof(ChassisLocations),
+        typeof(int),
+        typeof(int),
+        typeof(int),
+        typeof(string)
+    })]
+    [HarmonyPatch(MethodType.Constructor)]
     public static class WorkOrderEntry_ModifyMechArmor_Patch
     {
         private static void Prefix(ref int cbillCost, ref int techCost, int desiredFrontArmor, int desiredRearArmor)
@@ -778,6 +779,7 @@ namespace ArmorRepair
             typeof(int),
             typeof(string)
         })]
+    [HarmonyPatch(MethodType.Constructor)]
     public static class WorkOrderEntry_RepairMechStructure_Patch
     {
         private static void Prefix(ref int cbillCost, ref int techCost, int structureAmount)
