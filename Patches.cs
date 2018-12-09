@@ -22,10 +22,10 @@ namespace ArmorRepair
             {
                 Globals.tempMechLabQueue.Clear();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.LogError(ex);
-                return true; 
+                return true;
             }
 
             return true; // Allow original method to fire
@@ -37,10 +37,10 @@ namespace ArmorRepair
             try
             {
                 // If there are any work orders in the temporary queue, prompt the player
-                if(Globals.tempMechLabQueue.Count > 0)
+                if (Globals.tempMechLabQueue.Count > 0)
                 {
-                    Logger.LogDebug("Processing temp Mech Lab queue orders.");     
-                    
+                    Logger.LogDebug("Processing temp Mech Lab queue orders.");
+
                     int cbills = 0;
                     int techCost = 0;
                     int mechRepairCount = 0;
@@ -97,7 +97,7 @@ namespace ArmorRepair
 
                         // Calculate a friendly techCost of the work order in days, based on number of current mechtechs in the player's game.
                         if (techCost != 0 && __instance.MechTechSkill != 0)
-                        {                
+                        {
                             techCost = Mathf.CeilToInt((float)techCost / (float)__instance.MechTechSkill);
                         }
                         else
@@ -134,19 +134,19 @@ namespace ArmorRepair
                             {
                                 skipMechMessage = String.Format("{0} destroyed components. I'll leave the repairs for you to review.", skipMechCountDisplayed);
                             }
-                            else 
+                            else
                             {
                                 skipMechMessage = String.Format("{0} destroyed components, so I'll leave those repairs to you.", skipMechCountDisplayed);
                             }
-                            
+
                             Logger.LogDebug("Firing Yang's UI notification.");
                             SimGameInterruptManager notificationQueue = __instance.GetInterruptQueue();
 
                             // If all of the mechs needing repairs have damaged components and should be skipped from auto-repair, change the message notification structure to make more sense (e.g. just have an OK button)
-                            if(skipMechCount > 0 && mechRepairCount == 0)
+                            if (skipMechCount > 0 && mechRepairCount == 0)
                             {
                                 finalMessage = String.Format(
-                                    "Boss, {0} \n\n", 
+                                    "Boss, {0} \n\n",
                                     skipMechMessage
                                 );
 
@@ -165,7 +165,7 @@ namespace ArmorRepair
                             }
                             else
                             {
-                                if(skipMechCount > 0)
+                                if (skipMechCount > 0)
                                 {
                                     finalMessage = String.Format(
                                         "Boss, {0} damaged. It'll cost <color=#DE6729>{1}{2:n0}</color> and {3} days for these repairs. Want my crew to get started?\n\nAlso, {4}\n\n",
@@ -184,7 +184,7 @@ namespace ArmorRepair
                                         techCost.ToString()
                                     );
                                 }
-                                
+
 
                                 // Queue up Yang's notification
                                 notificationQueue.QueuePauseNotification(
@@ -197,9 +197,9 @@ namespace ArmorRepair
                                         Logger.LogDebug("[PROMPT] Moving work orders from temp queue to Mech Lab queue: " + Globals.tempMechLabQueue.Count + " work orders");
                                         foreach (WorkOrderEntry_MechLab workOrder in Globals.tempMechLabQueue.ToList())
                                         {
-                                                Logger.LogInfo("[PROMPT] Moving work order from temp queue to Mech Lab queue: " + workOrder.Description + " - " + workOrder.GetCBillCost());
-                                                Helpers.SubmitWorkOrder(__instance, workOrder);
-                                                Globals.tempMechLabQueue.Remove(workOrder);
+                                            Logger.LogInfo("[PROMPT] Moving work order from temp queue to Mech Lab queue: " + workOrder.Description + " - " + workOrder.GetCBillCost());
+                                            Helpers.SubmitWorkOrder(__instance, workOrder);
+                                            Globals.tempMechLabQueue.Remove(workOrder);
                                         }
                                     },
                                     "Yes",
@@ -224,9 +224,9 @@ namespace ArmorRepair
                             Logger.LogInfo("[AUTO] Moving work order from temp queue to Mech Lab queue: " + workOrder.Description + " - " + workOrder.GetCBillCost());
                             Helpers.SubmitWorkOrder(__instance, workOrder);
                             Globals.tempMechLabQueue.Remove(workOrder);
-                        }          
+                        }
                     }
-                }    
+                }
             }
             catch (Exception ex)
             {
@@ -261,8 +261,8 @@ namespace ArmorRepair
                  * Check if the given mech needs any structure repaired and that EnableStructureRepair is true in the mod settings
                  * 
                  */
-                if(ArmorRepair.ModSettings.EnableStructureRepair)
-                { 
+                if (ArmorRepair.ModSettings.EnableStructureRepair)
+                {
                     if (Helpers.CheckStructureDamage(mech))
                     {
                         Logger.LogDebug("SimGameConstant: StructureRepairTechPoints: " + __instance.Constants.MechLab.StructureRepairTechPoints);
@@ -457,7 +457,7 @@ namespace ArmorRepair
                     {
                         // Submit work order to our temporary queue for internal processing
                         Helpers.SubmitTempWorkOrder(
-                            __instance, 
+                            __instance,
                             newMechLabWorkOrder,
                             mech
                         );
@@ -512,15 +512,38 @@ namespace ArmorRepair
                     if (mechDef.GUID == mechSimGameUID)
                     {
                         ArmorRepairFactor armor = null;
+                        MechComponentRef armoritem = null;
                         foreach (var item in mechDef.Inventory)
                         {
-                            armor = item.GetComponent<ArmorRepairFactor>();
-                            if(armor != null)
+                            if (item.IsCategory(ArmorRepair.ModSettings.ArmorCategory))
+                            {
+                                armor = item.GetComponent<ArmorRepairFactor>();
+                                armoritem = item;
                                 break;
+                            }
                         }
 
                         float atpcost = armor?.ArmorTPCost ?? 1;
                         float acbcost = armor?.ArmorCBCost ?? 1;
+
+
+                        if(ArmorRepair.ModSettings.RepairCostByTag != null && ArmorRepair.ModSettings.RepairCostByTag.Length > 0)
+                        foreach (var cost in ArmorRepair.ModSettings.RepairCostByTag)
+                        {
+                            if (mechDef.Chassis.ChassisTags.Contains(cost.Tag))
+                            {
+                                atpcost *= cost.ArmorTPCost;
+                                acbcost *= cost.ArmorCBCost;
+                            }
+
+                            if(armoritem != null && armoritem.Def.ComponentTags.Contains(cost.Tag))
+                            {
+                                atpcost *= cost.ArmorTPCost;
+                                acbcost *= cost.ArmorCBCost;
+                            }
+
+                        }
+
 
                         // If ScaleArmorCostByTonnage is enabled, make the mech tonnage work as a percentage tech cost reduction (95 tons = 0.95 or "95%" of the cost, 50 tons = 0.05 or "50%" of the cost etc)
                         if (ArmorRepair.ModSettings.ScaleArmorCostByTonnage)
@@ -571,36 +594,71 @@ namespace ArmorRepair
                 float mechTonnageModifier = 1f;
                 // Original method code, this is still needed to work out zero structure modifiers 
                 string id = string.Format("MechLab - RepairMech - {0}", __instance.GenerateSimGameUID());
-                bool flag = false;
-                float num = 1f;
-                float num2 = 1f;
+                bool is_repaired = false;
+                float cbmod = 1f;
+                float tpmod = 1f;
 
                 foreach (MechDef mechDef in __instance.ActiveMechs.Values)
                 {
                     if (mechDef.GUID == mechSimGameUID)
                     {
+                        if (mechDef.GetChassisLocationDef(location).InternalStructure == (float)structureCount)
+                        {
+                            is_repaired = true;
+                            break;
+                        }   
+                        
                         // If ScaleStructureCostByTonnage is enabled, make the mech tonnage work as a percentage tech cost reduction (95 tons = 0.95 or "95%" of the cost, 50 tons = 0.05 or "50%" of the cost etc)
                         if (ArmorRepair.ModSettings.ScaleStructureCostByTonnage)
                         {
                             mechTonnageModifier = mechDef.Chassis.Tonnage * 0.01f;
                         }
 
-                        if (mechDef.GetChassisLocationDef(location).InternalStructure == (float)structureCount)
+                        StructureRepairFactor str = null;
+                        MechComponentRef armoritem = null;
+                        foreach (var item in mechDef.Inventory)
                         {
-                            flag = true;
+                            if (item.IsCategory(ArmorRepair.ModSettings.ArmorCategory))
+                            {
+                                str = item.GetComponent<StructureRepairFactor>();
+                                armoritem = item;
+                                break;
+                            }
                         }
 
+                        tpmod *= str?.StructureTPCost ?? 1;
+                        cbmod *= str?.StructureTPCost ?? 1;
+
+
+                        if (ArmorRepair.ModSettings.RepairCostByTag != null && ArmorRepair.ModSettings.RepairCostByTag.Length > 0)
+                            foreach (var cost in ArmorRepair.ModSettings.RepairCostByTag)
+                            {
+                                if (mechDef.Chassis.ChassisTags.Contains(cost.Tag))
+                                {
+                                    tpmod *= cost.StructureTPCost;
+                                    cbmod *= cost.StructureCBCost;
+                                }
+
+                                if (armoritem != null && armoritem.Def.ComponentTags.Contains(cost.Tag))
+                                {
+                                    tpmod *= cost.StructureTPCost;
+                                    cbmod *= cost.StructureCBCost;
+                                }
+
+                            }
                         break;
                     }
                 }
-                if (flag)
+                if (is_repaired)
                 {
-                    num = __instance.Constants.MechLab.ZeroStructureCBillModifier;
-                    num2 = __instance.Constants.MechLab.ZeroStructureTechPointModifier;
+                    cbmod = __instance.Constants.MechLab.ZeroStructureCBillModifier;
+                    tpmod = __instance.Constants.MechLab.ZeroStructureTechPointModifier;
                 }
 
-                int techCost = Mathf.CeilToInt((__instance.Constants.MechLab.StructureRepairTechPoints * (float)structureCount * num2) * mechTonnageModifier);
-                int cbillCost = Mathf.CeilToInt((float)((__instance.Constants.MechLab.StructureRepairCost * structureCount) * num) * mechTonnageModifier);
+
+
+                int techCost = Mathf.CeilToInt((__instance.Constants.MechLab.StructureRepairTechPoints * (float)structureCount * tpmod) * mechTonnageModifier);
+                int cbillCost = Mathf.CeilToInt((float)((__instance.Constants.MechLab.StructureRepairCost * structureCount) * cbmod) * mechTonnageModifier);
 
                 Logger.LogDebug("Structure WO Subentry Costing:");
                 Logger.LogDebug("***************************************");
@@ -725,7 +783,7 @@ namespace ArmorRepair
                 {
                     MechComponentRef mechComponentRef = mechDef.Inventory[i];
                     if (mechComponentRef.DamageLevel == ComponentDamageLevel.Destroyed)
-                    {         
+                    {
                         Logger.LogDebug("Flagging destroyed component warning: " + mechDef.Name);
                         errorMessages[MechValidationType.Underweight].Add(string.Format("DESTROYED COMPONENT: 'Mech has destroyed components", new object[0]));
                         break;
@@ -742,13 +800,13 @@ namespace ArmorRepair
 
     /* [FIX] SUPPRESS YANG REPAIRS WARNING
      * If the player has enabled Yang's notification about mech repairs in this mod, suppress the default in-game warning from spamming the player about repairs twice
-     */ 
+     */
     [HarmonyPatch(typeof(SimGameState), "ShowMechRepairsNeededNotif")]
     public static class SimGameState_ShowMechRepairsNeededNotif_Patch
     {
         public static bool Prefx(SimGameState __instance)
         {
-            if(ArmorRepair.ModSettings.enableAutoRepairPrompt)
+            if (ArmorRepair.ModSettings.enableAutoRepairPrompt)
             {
                 __instance.CompanyStats.Set<int>("COMPANY_NotificationViewed_BattleMechRepairsNeeded", __instance.DaysPassed);
                 return false; // Suppress original method
@@ -757,7 +815,7 @@ namespace ArmorRepair
             {
                 return true; // Do nothing if the player isn't using our Yang prompt functionality.
             }
-            
+
         }
     }
 

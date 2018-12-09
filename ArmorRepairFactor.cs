@@ -21,4 +21,20 @@ namespace ArmorRepair
                 ArmorTPCost = 1;
         }
     }
+
+    [CustomComponent("StructureFactor")]
+    public class StructureRepairFactor : SimpleCustomComponent, IAfterLoad
+    {
+        public float StructureTPCost { get; set; }
+        public float StructureCBCost { get; set; }
+
+
+        public void OnLoaded(Dictionary<string, object> values)
+        {
+            if (StructureTPCost <= 0)
+                StructureTPCost = 1;
+            if (StructureCBCost <= 0)
+                StructureCBCost = 1;
+        }
+    }
 }

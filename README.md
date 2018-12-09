@@ -12,6 +12,7 @@ of snowballing in a campaign, and with the repairs scaled by tonnage it will als
 ## Requirements
 * install [BattleTechModLoader](https://github.com/Mpstark/BattleTechModLoader/releases) using the [instructions here](https://github.com/Mpstark/BattleTechModLoader)
 * install [ModTek](https://github.com/Mpstark/ModTek/releases) using the [instructions here](https://github.com/Mpstark/ModTek)
+* install [CustomComponents](https://github.com/BattletechModders/CustomComponents/releases)
 
 ## Recommended Mods
 * TBC pending real play testing :)
@@ -43,6 +44,37 @@ Downloads can be found on [github](https://github.com/citizenSnippy/ArmorRepair/
 * If you want to adjust the Armor / Structure costs, you'll need to edit \Mods\ArmorRepair\StreamingAssets\data\simGameConstants\SimGameConstants.json
 * Start the game.
 
+## CustomComponents
+
+### ArmorRepair
+Control cost of armor repair, set by armor item. Parameters
+Setting | Default | Description
+ArmorTPCost | 1 | multiplier for armor repair techpoints cost
+ArmorCBCost | 1 | multiplier for armor repair cbills cost
+
+### StructureRepair
+Control cost of structure repair, set by structure item. Parameters
+Setting | Default | Description
+StructureTPCost | 1 | multiplier for structure repair techpoints cost
+StructureCBCost | 1 | multiplier for structure repair cbills cost
+
+## Repair Cost By Tag
+
+You can use tags to change repair cost of armor or structure. Tags sets on chassis(work for both armor and structure), armor item(only armor repair cost affected) or structure item(only structure repair)
+
+To set flag use  RepairCostByTag parameter in mod.json. This is a list of RepairCost records with given parameters(if multipliers is lower or equal 0 - it will be replaced with 1)
+```
+		"RepairCostByTag" : [
+			{
+				"Tag" : "SOME_TEMPLATE_TAG",
+				"ArmorTPCost" : 1,
+				"ArmorCBCost" : 1,
+				"StructureTPCost" : 1,
+				"StructureCBCost" : 1
+			}
+		]
+```
+
 ## mod.json Settings
 Setting | Type | Default | Description
 --- | --- | --- | ---
@@ -51,7 +83,11 @@ scaleStructureCostByTonnage | bool | default true | Set to false if you don't wa
 scaleArmorCostByTonnage | bool | default true | Set to false if you don't want to scale armor repair time/costs by mech tonnage
 enableAutoRepairPrompt | bool | default true | Set to false if you don't want Yang to summarise repair costs and ask if you want him to auto-repair 'Mechs
 autoRepairMechsWithDestroyedComponents | bool | default true | Set to false to never auto-repair 'Mechs if they have destroyed components
+ArmorCategory | string | default "Armor" | CategoryID for armor item
+StructureCategory | string | default | Sttructure | CategoryID for structure item
 debug | bool | default true | Set this to false to turn off debug logging (See ArmorRepair\Log.txt)
+RepairCostByTag | list of RepairCost | default empty | set repair cost by tag
+
 
 ## SimGameConstants.json Settings
 Setting | Type | Default | Description

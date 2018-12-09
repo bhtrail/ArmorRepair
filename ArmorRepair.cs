@@ -34,6 +34,7 @@ namespace ArmorRepair
                 Logger.LogError(ex);
                 ModSettings = new Settings();
             }
+            ModSettings.Complete();
 
             Logger.LogDebug("Mod Directory: " + ModDirectory);
             Logger.LogDebug("Mod Settings Debug: " + ModSettings.Debug);
