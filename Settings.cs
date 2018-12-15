@@ -8,6 +8,10 @@
         public float StructureTPCost;
         public float StructureCBCost;
 
+        public float InstallTPCost;
+        public float InstallCBCost;
+        public float RepairTPCost;
+        public float RepairCBCost;
     }
 
     public class Settings
@@ -49,6 +53,15 @@
                     if (RepairCostByTag[i].StructureCBCost <= 0f)
                         RepairCostByTag[i].StructureCBCost = 1;
 
+                    if (RepairCostByTag[i].RepairCBCost <= 0f)
+                        RepairCostByTag[i].RepairCBCost = 1f;
+                    if (RepairCostByTag[i].RepairTPCost <= 0f)
+                        RepairCostByTag[i].RepairTPCost = 1f;
+
+                    if (RepairCostByTag[i].InstallCBCost <= 0f)
+                        RepairCostByTag[i].InstallCBCost = 1f;
+                    if (RepairCostByTag[i].InstallTPCost <= 0f)
+                        RepairCostByTag[i].InstallTPCost = 1f;
                 }
         }
 

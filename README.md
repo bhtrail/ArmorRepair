@@ -49,18 +49,24 @@ Downloads can be found on [github](https://github.com/citizenSnippy/ArmorRepair/
 ### ArmorRepair
 Control cost of armor repair, set by armor item. Parameters
 Setting | Default | Description
+--- | --- | ---
 ArmorTPCost | 1 | multiplier for armor repair techpoints cost
 ArmorCBCost | 1 | multiplier for armor repair cbills cost
 
 ### StructureRepair
 Control cost of structure repair, set by structure item. Parameters
 Setting | Default | Description
+--- | --- | ---
 StructureTPCost | 1 | multiplier for structure repair techpoints cost
 StructureCBCost | 1 | multiplier for structure repair cbills cost
 
 ## Repair Cost By Tag
 
 You can use tags to change repair cost of armor or structure. Tags sets on chassis(work for both armor and structure), armor item(only armor repair cost affected) or structure item(only structure repair)
+
+Also you can use tags to change repair or install cost of components. Tags sets on chassis and/or component
+
+This values are Multiplicative. So if you for example add two tags with ArmorTPCost = 1.5 and ArmorTPCost = 0.5 and chassis/affected item have both it got 1.5 * 0.5 = 0.75 of base TP cost for armor repair
 
 To set flag use  RepairCostByTag parameter in mod.json. This is a list of RepairCost records with given parameters(if multipliers is lower or equal 0 - it will be replaced with 1)
 ```
@@ -70,7 +76,11 @@ To set flag use  RepairCostByTag parameter in mod.json. This is a list of Repair
 				"ArmorTPCost" : 1,
 				"ArmorCBCost" : 1,
 				"StructureTPCost" : 1,
-				"StructureCBCost" : 1
+				"StructureCBCost" : 1,
+                "InstallTPCost" : 1,
+                "InstallCBCost" : 1,
+                "RepairTPCost" : 1,
+                "RepairCBCost" : 1
 			}
 		]
 ```

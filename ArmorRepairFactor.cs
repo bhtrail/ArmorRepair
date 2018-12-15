@@ -22,7 +22,7 @@ namespace ArmorRepair
         }
     }
 
-    [CustomComponent("StructureFactor")]
+    [CustomComponent("StructureRepair")]
     public class StructureRepairFactor : SimpleCustomComponent, IAfterLoad
     {
         public float StructureTPCost { get; set; }

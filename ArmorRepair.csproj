@@ -61,10 +61,22 @@
     <Compile Include="ArmorRepairFactor.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Patches.cs" />
+    <Compile Include="MechLabPanel_LoadMech.cs" />
+    <Compile Include="Patches\MechValidationRules_ValidateMechTonnage_Patch.cs" />
+    <Compile Include="Patches\SimGameState_CreateComponentRepairWorkOrder.cs" />
+    <Compile Include="Patches\SimGameState_RestoreMechPostCombat_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="Patches\SimGameState_ResolveCompleteContract_Patch.cs" />
+    <Compile Include="Patches\SimGameState_CreateComponentInstallWorkOrder.cs" />
+    <Compile Include="Patches\SimGameState_CreateMechArmorModifyWorkOrder_Patch.cs" />
+    <Compile Include="Patches\SimGameState_CreateMechRepairWorkOrder_Patch.cs" />
+    <Compile Include="Patches\SimGameState_ML_RepairMech_Patch.cs" />
+    <Compile Include="Patches\SimGameState_ShowMechRepairsNeededNotif_Patch.cs" />
+    <Compile Include="Patches\WorkOrderEntry_ModifyMechArmor_Patch.cs" />
+    <Compile Include="Patches\WorkOrderEntry_RepairMechStructure_Patch.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
