@@ -162,23 +162,22 @@ namespace ArmorRepair
                             newMechLabWorkOrder = Helpers.CreateBaseMechLabOrder(__instance, mech);
                         }
 
-                        // Only create work orders for repairing armor if this location has taken armor damage in combat
-                        if (thisLocLoadout.CurrentArmor != thisLocLoadout.AssignedArmor)
+                        // Work out difference of armor lost for each location - default to 0
+                        int armorDifference = 0;
+
+                        // Consider rear armour in difference calculation if this is a RT, CT or LT
+                        if (thisLocLoadout == mech.CenterTorso || thisLocLoadout == mech.RightTorso || thisLocLoadout == mech.LeftTorso)
                         {
-                            // Work out difference of armor lost for each location - default to 0
-                            int armorDifference = 0;
-
-                            // Consider rear armour in difference calculation if this is a RT, CT or LT
-                            if (thisLocLoadout == mech.CenterTorso || thisLocLoadout == mech.RightTorso || thisLocLoadout == mech.LeftTorso)
-                            {
-                                Logger.LogDebug("Location also has rear armor.");
-                                armorDifference = (int)Mathf.Abs(thisLocLoadout.CurrentArmor - thisLocLoadout.AssignedArmor) + (int)Mathf.Abs(thisLocLoadout.CurrentRearArmor - thisLocLoadout.AssignedRearArmor);
-                            }
-                            else
-                            {
-                                armorDifference = (int)Mathf.Abs(thisLocLoadout.CurrentArmor - thisLocLoadout.AssignedArmor);
-                            }
-
+                            Logger.LogDebug("Location also has rear armor.");
+                            armorDifference = (int)Mathf.Abs(thisLocLoadout.CurrentArmor - thisLocLoadout.AssignedArmor) + (int)Mathf.Abs(thisLocLoadout.CurrentRearArmor - thisLocLoadout.AssignedRearArmor);
+                        }
+                        else
+                        {
+                            armorDifference = (int)Mathf.Abs(thisLocLoadout.CurrentArmor - thisLocLoadout.AssignedArmor);
+                        }
+                        // Only create work orders for repairing armor if this location has taken armor damage in combat
+                        if (armorDifference != 0)
+                        {
                             Logger.LogInfo("Total armor difference for " + thisLocName + " is " + armorDifference);
                             Logger.LogInfo("Creating ModifyMechArmor work order entry for " + thisLocName);
                             Logger.LogDebug("Calling ModifyMechArmor WO with params - GUID: " +
