@@ -61,7 +61,7 @@ namespace ArmorRepair
                         }
 
                         tpmod *= str?.StructureTPCost ?? 1;
-                        cbmod *= str?.StructureTPCost ?? 1;
+                        cbmod *= str?.StructureCBCost ?? 1;
 
 
                         if (ArmorRepair.ModSettings.RepairCostByTag != null && ArmorRepair.ModSettings.RepairCostByTag.Length > 0)
