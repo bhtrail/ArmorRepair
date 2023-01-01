@@ -71,7 +71,7 @@
     <Compile Include="ArmorRepairFactor.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="MechLabPanel_LoadMech.cs" />
+    <Compile Include="Patches\MechLabPanel_LoadMech.cs" />
     <Compile Include="Patches\SimGameState_CreateComponentRepairWorkOrder.cs" />
     <Compile Include="Patches\SimGameState_RestoreMechPostCombat_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
