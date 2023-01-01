@@ -10,7 +10,7 @@ namespace ArmorRepair
         {
             if (ArmorRepair.ModSettings.enableAutoRepairPrompt)
             {
-                __instance.CompanyStats.Set<int>("COMPANY_NotificationViewed_BattleMechRepairsNeeded", __instance.DaysPassed);
+                __instance.CompanyStats.Set("COMPANY_NotificationViewed_BattleMechRepairsNeeded", __instance.DaysPassed);
                 return false; // Suppress original method
             }
             else

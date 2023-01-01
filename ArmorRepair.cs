@@ -14,8 +14,7 @@ namespace ArmorRepair
 
         public static void Init(string modDirectory, string settingsJSON)
         {
-
-            new Logger();
+            Logger.InitLoggers(modDirectory);
 
             Logger.LogInfo("Mod Initialising...");
 

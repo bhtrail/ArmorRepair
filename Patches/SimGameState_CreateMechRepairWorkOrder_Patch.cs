@@ -10,7 +10,7 @@ namespace ArmorRepair
     public static class SimGameState_CreateMechRepairWorkOrder_Patch
     {
 
-        private static void Postfix(ref SimGameState __instance, ref string mechSimGameUID, ref ChassisLocations location, ref int structureCount, ref WorkOrderEntry_RepairMechStructure __result)
+        public static void Postfix(ref SimGameState __instance, ref string mechSimGameUID, ref ChassisLocations location, ref int structureCount, ref WorkOrderEntry_RepairMechStructure __result)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace ArmorRepair
                         }
 
                         tpmod *= str?.StructureTPCost ?? 1;
-                        cbmod *= str?.StructureTPCost ?? 1;
+                        cbmod *= str?.StructureCBCost ?? 1;
 
 
                         if (ArmorRepair.ModSettings.RepairCostByTag != null && ArmorRepair.ModSettings.RepairCostByTag.Length > 0)
