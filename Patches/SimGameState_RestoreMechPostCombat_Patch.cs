@@ -104,6 +104,9 @@ namespace ArmorRepair
                  */
                 if (Helpers.CheckDamagedComponents(mech))
                 {
+                    // Cache mech for tag lookup in CreateComponentRepairWorkOrder as if we were in lab
+                    MechLabPanel_LoadMech.CurrentMech = mech;
+
                     for (int index = 0; index < mech.Inventory.Length; index++)
                     {
                         MechComponentRef mechComponentRef = mech.Inventory[index];
