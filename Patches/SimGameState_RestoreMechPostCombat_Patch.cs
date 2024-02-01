@@ -101,10 +101,12 @@ namespace ArmorRepair
                  * -----------------------
                  * Check if the given mech needs any critted components repaired
                  * 
-                 * NOTE: Not yet working. Repair components are added to work order but not actually repaired after WO completes. Noticed there is another queue involved on SGS.WorkOrderComponents we need to debug.
-                 * Currently throws "SimGameState [ERROR] ML_RepairComponent MechBay - RepairComponent - SGRef_490 had an invalid mechComponentID Ammo_AmmunitionBox_Generic_AC5, skipping" in SimGame logger on WO completion.
+                 */
                 if (Helpers.CheckDamagedComponents(mech))
                 {
+                    // Cache mech for tag lookup in CreateComponentRepairWorkOrder as if we were in lab
+                    MechLabPanel_LoadMech.CurrentMech = mech;
+
                     for (int index = 0; index < mech.Inventory.Length; index++)
                     {
                         MechComponentRef mechComponentRef = mech.Inventory[index];
@@ -121,7 +123,7 @@ namespace ArmorRepair
 
                             // Create a new component repair work order for this component
                             Logger.LogInfo("Creating Component Repair work order entry for " + mechComponentRef.ComponentDefID);
-                            WorkOrderEntry_RepairComponent newComponentRepairOrder = __instance.CreateComponentRepairWorkOrder(mechComponentRef, false);
+                            WorkOrderEntry_RepairComponent newComponentRepairOrder = __instance.CreateComponentRepairWorkOrder(mechComponentRef, true);
 
                             // Attach as a child to the base Mech Lab order.
                             Logger.LogDebug("Adding WO subentry to repair component " + mechComponentRef.ComponentDefID);
@@ -129,7 +131,6 @@ namespace ArmorRepair
                         }
                     }
                 }
-                */
 
 
                 /* ARMOR DAMAGE CHECKS
